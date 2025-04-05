@@ -3,21 +3,20 @@ package crearDatabase
 import (
 	"database/sql"
 	"fmt"
-	"io/ioutil"
-
-	_ "github.com/go-sql-driver/mysql"
+	"os"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-func InitializeDatabase(dsn string) error {
-	// Conectar a la base de datos
-	db, err := sql.Open("mysql", dsn)
+func InitializeDatabase(dbPath string) error {
+	// Conectar a la base de datos SQLite3
+	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return fmt.Errorf("error al conectar a la base de datos: %v", err)
 	}
 	defer db.Close()
 
 	// Leer el archivo init.sql
-	sqlFile, err := ioutil.ReadFile("init.sql")
+	sqlFile, err := os.ReadFile("init.sql")
 	if err != nil {
 		return fmt.Errorf("error al leer el archivo init.sql: %v", err)
 	}

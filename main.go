@@ -3,30 +3,92 @@ package main
 import (
 	"ProyectoWEB/proteccion"
 	"ProyectoWEB/rutas"
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"ProyectoWEB/crearDatabase"
+	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	_ "github.com/mattn/go-sqlite3"
 )
-func iniciarDB(){
-	dsn := "usuario:contraseña@tcp(127.0.0.1:3306)/"
-	err := crearDatabase.InitializeDatabase(dsn)
-	if err != nil {
-        fmt.Println("Error al inicializar la base de datos:", err)
-        return
-    }
 
-    fmt.Println("Aplicación lista para usar.")
+var (
+	db   *sql.DB
+	once sync.Once
+)
+
+// GetConnection retorna una conexión singleton a la base de datos
+func GetConnection() *sql.DB {
+	once.Do(func() {
+		dbPath := os.Getenv("DB_PATH")
+		if dbPath == "" {
+			dbPath = "./golang_consola.db"
+		}
+		
+		var err error
+		db, err = sql.Open("sqlite3", dbPath+"?_journal=WAL&_timeout=5000")
+		if err != nil {
+			log.Fatalf("Error al conectar a la base de datos: %v", err)
+		}
+		
+		// Configurar la conexión
+		db.SetMaxOpenConns(1) // SQLite funciona mejor con una sola conexión
+		db.SetMaxIdleConns(1)
+		db.SetConnMaxLifetime(time.Hour)
+	})
+	return db
+}
+
+func iniciarDB() {
+	// Verificar si la base de datos ya existe
+	dbPath := os.Getenv("DB_PATH")
+	if dbPath == "" {
+		dbPath = "./golang_consola.db"
+	}
+	
+	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
+		// La base de datos no existe, crearla
+		log.Println("Creando nueva base de datos...")
+		err := os.WriteFile(dbPath, []byte{}, 0644)
+		if err != nil {
+			log.Fatalf("Error al crear el archivo de base de datos: %v", err)
+		}
+		
+		// Obtener la conexión
+		db := GetConnection()
+		
+		// Leer el archivo init.sql
+		sqlFile, err := os.ReadFile("init.sql")
+		if err != nil {
+			log.Fatalf("Error al leer el archivo init.sql: %v", err)
+		}
+		
+		// Ejecutar el script SQL
+		_, err = db.Exec(string(sqlFile))
+		if err != nil {
+			log.Fatalf("Error al ejecutar el script SQL: %v", err)
+		}
+		
+		log.Println("Base de datos inicializada correctamente.")
+	} else {
+		log.Println("La base de datos ya existe, omitiendo inicialización.")
+	}
 }
 
 func main() {
-	/* iniciar esta función por primera vez unicamente.*/
-	// iniciarDB()
+	// Cargar variables de entorno primero
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error cargando el archivo .env: %v", err)
+	}
+
+	// Inicializar la base de datos si es necesario
+	iniciarDB()
+	
 	mux := mux.NewRouter()
 
 	// Rutas públicas
@@ -38,8 +100,6 @@ func main() {
 	mux.HandleFunc("/seguridad/registro_post", rutas.Seguridad_registro_post).Methods("POST")
 
 	// Crear un subruteador para rutas protegidas
-	/* te permite organizar y agrupar rutas relacionadas bajo un prefijo o configuración común.
-	Es una forma de subdividir tu enrutador principal para aplicar configuraciones específicas a un grupo de rutas. */
 	protected := mux.NewRoute().Subrouter()
 
 	// Aplicar protección y middleware de no-caché a todas las rutas protegidas
@@ -77,23 +137,22 @@ func main() {
 	protected.HandleFunc("/seguridad/logout", rutas.Seguridad_logout)
 
 	// Configuración de archivos estaticos hacia mux
-
-	s := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/"))) // importante el punto antes del /assets/
+	s := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/")))
 	mux.PathPrefix("/assets/").Handler(s)
 
-	errorVariables := godotenv.Load()
-	if errorVariables != nil {
-		panic(errorVariables)
-		return
+	// Obtener puerto del archivo .env
+	puerto := os.Getenv("PORT")
+	if puerto == "" {
+		puerto = "8080" // Puerto por defecto
 	}
+
 	server := &http.Server{
-		Addr:    "localhost:" + os.Getenv("PORT"),
-		Handler: mux,
-		// Se recomiendan agregar estas dos variables. Por que? no lo se rick
+		Addr:         "localhost:" + puerto,
+		Handler:      mux,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	fmt.Println("Corriendo servidor dede localhost:" + os.Getenv("PORT"))
+	
+	fmt.Println("Servidor corriendo en localhost:" + puerto)
 	log.Fatal(server.ListenAndServe())
-
 }
