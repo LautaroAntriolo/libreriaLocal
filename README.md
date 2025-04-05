@@ -28,43 +28,13 @@ Una librería local escrita en Go que permite cargar libros por ISBN o URL de Me
 
 ## Requisitos Previos
 
-- [XAMPP](https://www.apachefriends.org/index.html) instalado con MySQL activado. 
-- Go >= 1.23.2.
-- Dependencias externas: `github.com/go-sql-driver/mysql`.
+- No hace falta requisitos previos
 
 ## Instalación
 
-1. Clona el repositorio:
-
-   ```bash
-   git clone https://github.com/tu-usuario/mi-libreria.git
-   cd mi-libreria
-   ```
-2. Instala las dependencias:
-
-   ```
-   `go mod tidy
-   ```
-3. Configura la conexión a la base de datos:
-   crea un archivo llamado .env con las credenciales de MySQL:
-
-   ```
-   `{
-       "db_user": "root",
-       "db_password": "",
-       "db_host": "127.0.0.1:3306"
-   }
-   ```
-4. Inicializa la base de datos:
-   Al ejecutar la aplicaci}on, las tablas se crearán automaticamente si no existen.
-5. Ejecuta la aplicación:
-
-   ```
-   `go run main.go
-   ```
-
-## Uso
-
+1. Descarga el archivo ProyectoWEB.exe y ejecútalo a windows.
+2. Ejecuta la aplicación:
+   Esto abre la terminal de windows donde irás viendo los mensajes de debug
 
 ## Contribuciones
 

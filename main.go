@@ -45,7 +45,7 @@ func GetConnection() *sql.DB {
 
 func iniciarDB() {
 	// Verificar si la base de datos ya existe
-	dbPath := os.Getenv("DB_PATH")
+	dbPath := os.Getenv("DB_NAME")
 	if dbPath == "" {
 		dbPath = "./golang_consola.db"
 	}
