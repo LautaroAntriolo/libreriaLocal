@@ -1,0 +1,130 @@
+{{template "header"}}
+{{if .usuario_id}}
+{{template "navbarLogin"}}
+{{else}}
+{{template "navbarNotLogin"}}
+{{end}}
+<div class="container mt-5">
+  <nav aria-label="breadcrumb">
+    {{if .usuario_id}}
+    <ol class="breadcrumb">
+      
+      <li class="breadcrumb-item">
+        <a href="/formularios-datos">Respuestas formulario</a>
+      </li>
+    </ol>
+    {{end}}
+  </nav>
+</div>
+<div class="container mt-5">
+  <h2 class="mb-4">Registrar un Libro</h2>
+  <form action="/formulario-post" method="POST">
+    <!-- Nombre del Libro -->
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre del Libro *</label>
+      <input type="text" class="form-control" name="nombre" id="nombre" required />
+    </div>
+    <!-- URL para la imágen -->
+    <div class="mb-3">
+      <label for="url" class="form-label">URL de la imágen de portada</label>
+      <input type="text" class="form-control" name="url" id="name" id="url" required />
+    </div>
+
+    <!-- Autor -->
+    <div class="mb-3">
+      <label for="autor" class="form-label">Autor *</label>
+      <input
+        type="text"
+        class="form-control"
+        name="autor"
+        id="autor"
+        required
+      />
+    </div>
+
+    <!-- ISBN -->
+    <div class="mb-3">
+      <label for="isbn" class="form-label">ISBN *</label>
+      <input type="text" class="form-control" name="isbn" id="isbn" required />
+    </div>
+
+    <!-- Editorial -->
+    <div class="mb-3">
+      <label for="editorial" class="form-label">Editorial *</label>
+      <input
+        type="text"
+        class="form-control"
+        name="editorial"
+        id="editorial"
+        required
+      />
+    </div>
+
+    <!-- Descripción (opcional) -->
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción (opcional)</label>
+      <textarea
+        class="form-control"
+        name="descripcion"
+        id="descripcion"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <!-- Comentarios (opcional) -->
+    <div class="mb-3">
+      <label for="comentarios" class="form-label">Comentarios</label>
+      <textarea
+        class="form-control"
+        name="comentarios"
+        id="comentarios"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <!-- ¿Leíste el libro? -->
+    <div class="mb-3">
+      <label class="form-label">¿Leíste el libro?</label>
+      <select
+        class="form-select"
+        name="leido"
+        id="leido"
+        onchange="mostrarPuntaje()"
+      >
+        <option value="no">No</option>
+        <option value="si">Sí</option>
+      </select>
+    </div>
+
+    <!-- Puntaje (solo si fue leído) -->
+    <div class="mb-3" id="puntaje-container" style="display: none">
+      <label for="puntaje" class="form-label">Puntaje (1-10)</label>
+      <input
+        type="number"
+        class="form-control"
+        name="puntaje"
+        id="puntaje"
+        min="1"
+        max="10"
+        value=1
+      />
+    </div>
+
+    <!-- Botón de envío -->
+    <button type="submit" class="btn btn-primary">Guardar Libro</button>
+  </form>
+</div>
+
+<script>
+  function mostrarPuntaje() {
+    var leido = document.getElementById("leido").value;
+    var puntajeContainer = document.getElementById("puntaje-container");
+    if (leido === "si") {
+      puntajeContainer.style.display = "block";
+    } else {
+      puntajeContainer.style.display = "none";
+    }
+  }
+</script>
+
+{{template "pie"}}

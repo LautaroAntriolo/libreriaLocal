@@ -1,0 +1,160 @@
+{{template "header"}} {{if .usuario_id}} {{template "navbarLogin"}} {{else}}
+{{template "navbarNotLogin"}} {{end}} {{if gt (len .Datos) 0}}
+<div class="container mt-4">
+  <form action="/buscar-libros" method="GET">
+    <div class="input-group mb-3">
+      <input
+        type="text"
+        id="searchInput"
+        name="q"
+        class="form-control"
+        placeholder="Buscar libros..."
+        aria-label="Buscar libros"
+        aria-describedby="button-addon2"
+      />
+      <button class="btn btn-outline-secondary" type="submit">
+        Buscar
+      </button>
+    </div>
+  </form>
+</div>
+<div class="container mt-5">
+  <div class="container mt-4">
+    <!-- Título principal -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Listado de Libros</h2>
+      <!-- Botón para agregar un nuevo libro -->
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton1"
+          data-bs-toggle="dropdown"
+          aria-expanded="true"
+        >
+          <i class="fas fa-plus-circle me-2"></i>Agregar un nuevo Libro
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <li>
+            <a class="dropdown-item" href="/registro-libros/manual"
+              >Registro por formulario</a
+            >
+          </li>
+          <li>
+            <a class="dropdown-item" href="/registro-libros/isbn"
+              >Registro por ISBN</a
+            >
+          </li>
+          <li>
+            <a class="dropdown-item" href="/registro-libros/urlml"
+              >Registro por URL de ML</a
+            >
+          </li>
+          <!-- Próximamente -->
+          <!-- <li><a class="dropdown-item" href="/registro-libros/imagen">Registro por imágen</a></li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- Listado de libros -->
+  <div class="row">
+    {{range .Datos}}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-4">
+      <div class="card h-100 d-flex flex-column" style="min-width: 180px;">
+        <a
+          href="/proximos-libros/{{.Id}}"
+          class="text-decoration-none flex-grow-1"
+        >
+          <img
+            src="{{.Url_imagen}}"
+            class="card-img-top"
+            alt="Portada de {{.Nombre}}"
+          />
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{.Nombre}}</h5>
+          </div>
+        </a>
+        <!-- Card footer con el nombre del autor -->
+        <div class="card-footer bg-transparent mt-auto">
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Nombre del autor con enlace para abrir el modal -->
+            {{if gt (contarLibrosPorAutor .Autor) 1}}
+            <div class="fw-bold">
+              <a
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#autorModal-{{.Id}}"
+                class="text-decoration-none"
+              >
+                {{.Autor}}
+              </a>
+            </div>
+            <span class="badge bg-primary"
+              >{{contarLibrosPorAutor .Autor}}</span
+            >
+            {{else}}
+            <div class="fw-bold">
+              <a href="#" data-bs-toggle="modal" class="text-decoration-none">
+                {{.Autor}}
+              </a>
+            </div>
+            {{end}}
+
+          </div>
+          <div class="d-flex justify-content-between gap-1 mt-2">
+          <a href="/proximos-libros/notas/{.Id}" class="btn btn-primary btn-sm flex-grow-1 py-1 fw-bold">
+              Notas
+          </a>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para mostrar los libros del autor (fuera de la card pero aún dentro del loop) -->
+    <div
+      class="modal fade"
+      id="autorModal-{{.Id}}"
+      tabindex="-1"
+      aria-labelledby="autorModalLabel-{{.Id}}"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="autorModalLabel-{{.Id}}">
+              Libros de {{.Autor}}
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <ul class="list-group">
+              {{range $libro := buscarMasLibros .Autor}}
+              <li class="list-group-item">
+                <a
+                  href="/proximos-libros/{{$libro.Id}}"
+                  class="text-decoration-none"
+                  >{{$libro.Nombre}}</a
+                >
+              </li>
+              {{end}}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{end}}
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+<script src="ProyectoWEB/assets/JS/bootstrap.min.js"></script>
+{{else}}
+<div class="container mt-5">
+  <h2 class="mb-4">Todavía no tenés libros registrados</h2>
+  <h3>Registrar un libro <a href="/registro-libros/manual">Formulario</a></h3>
+</div>
+{{end}} {{template "pie"}}

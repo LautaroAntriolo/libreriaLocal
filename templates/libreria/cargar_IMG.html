@@ -1,0 +1,23 @@
+{{template "header"}} {{if .usuario_id}} {{template "navbarLogin"}} {{else}}
+{{template "navbarNotLogin"}} {{end}}
+
+<div class="container">
+    <nav
+      style="--bs-breadcrumb-divider: '>';"
+      aria-label="breadcrumb"
+    >
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item">
+          <a href="/proximos-libros">Todos los libros</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Cargar por Imágen
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+<h1>Cargamos el libro por su imagen</h1>
+
+{{template "pie"}}

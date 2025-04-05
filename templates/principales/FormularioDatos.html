@@ -1,0 +1,47 @@
+{{template "header"}}
+{{if .usuario_id}}
+{{template "navbarLogin"}}
+{{else}}
+{{template "navbarNotLogin"}}
+{{end}}
+{{if gt (len .Datos) 0}}
+<div class="container mt-5">
+    <h2 class="mb-4">Listado de Libros</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Imagen</th>
+                <th>Autor</th>
+                <th>ISBN</th>
+                <th>Editorial</th>
+                <th>Descripción</th>
+                <th>Crítica</th>
+                <th>Leido</th>
+                <th>Puntaje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Datos}}
+            <tr>
+                <td>{{.Nombre}}</td>
+                <td><img src="{{.Url_imagen}}" alt="Portada" width="50"></td>
+                <td>{{.Autor}}</td>
+                <td>{{.Isbn}}</td>
+                <td>{{.Editorial}}</td>
+                <td>{{.Descripcion}}</td>
+                <td>{{.Critica}}</td>
+                <td>{{.Leido}}</td>
+                <td>{{.GetPuntaje}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+{{else}}
+<div class="container mt-5 ">
+    <h2 class="mb-4">Todavía no tenés libros registrados</h2>
+    <h3>Registrar un libro <a href="/registro-libros/manual">Formulario</a></h3>
+</div>
+{{end}}
+{{template "pie"}}

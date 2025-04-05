@@ -1,0 +1,80 @@
+{{template "header"}} 
+{{if .usuario_id}} 
+  {{template "navbarLogin"}} 
+{{else}}
+  {{template "navbarNotLogin"}} 
+{{end}}
+<style>
+    @media (max-width: 768px) { /* Oculta la imagen en móviles */
+      .image-preview {
+        display: none;
+      }
+    }
+</style>
+<div class="container mt-4">
+  <h2>Editar Libro: {{.Datos.Nombre}}</h2>
+  
+  <form action="/libro/{{.Datos.Id}}/actualizar" method="POST">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="isbn">ISBN</label>
+          <input type="text" id="isbn" name="isbn" class="form-control" value="{{.Datos.Isbn}}">
+        </div>
+        
+        <div class="form-group mb-3">
+          <label for="nombre">Nombre *</label>
+          <input type="text" id="nombre" name="nombre" class="form-control" value="{{.Datos.Nombre}}" required>
+        </div>
+        
+        <div class="form-group mb-3">
+          <label for="autor">Autor *</label>
+          <input type="text" id="autor" name="autor" class="form-control" value="{{.Datos.Autor}}" required>
+        </div>
+        
+        <div class="form-group mb-3">
+          <label for="editorial">Editorial *</label>
+          <input type="text" id="editorial" name="editorial" class="form-control" value="{{.Datos.Editorial}}" required>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="form-group mb-3 d-flex align-items-center gap-3">
+            <label for="url_imagen">URL de la portada</label>
+            <input type="text" id="url_imagen" name="url_imagen" class="form-control" value="{{.Datos.Url_imagen}}">
+            <img src="{{.Datos.Url_imagen}}" alt="Portada" class="image-preview" style="max-width: 100px; height: auto;">
+          </div>
+        
+        <div class="form-group mb-3">
+          <label for="leido">¿Leído?</label>
+          <select id="leido" name="leido" class="form-control">
+            <option value="0" {{if eq .Datos.Leido "no"}}selected{{end}}>No</option>
+            <option value="1" {{if eq .Datos.Leido "si"}}selected{{end}}>Sí</option>
+          </select>
+        </div>
+        
+        <div class="form-group mb-3">
+          <label for="puntaje">Puntaje (0-10)</label>
+          <input type="number" id="puntaje" name="puntaje" class="form-control" min="0" max="10" value="{{.Datos.Puntaje}}">
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-group mb-3">
+      <label for="critica">Crítica</label>
+      <textarea id="critica" name="critica" class="form-control" rows="3">{{.Datos.Critica}}</textarea>
+    </div>
+    
+    <div class="form-group mb-3">
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" name="descripcion" class="form-control" rows="5">{{.Datos.Comentarios}}</textarea>
+    </div>
+    
+    <div class="form-group mb-3">
+      <button type="submit" class="btn btn-primary">Guardar cambios</button>
+      <a href="/proximos-libros/{{.Datos.Id}}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+{{template "pie"}}

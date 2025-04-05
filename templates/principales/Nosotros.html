@@ -1,0 +1,67 @@
+{{template "header"}} {{if .usuario_id}} {{template "navbarLogin"}} {{else}}
+{{template "navbarNotLogin"}} {{end}}
+<!-- Conetenido!  -->
+<main class="container">
+  <section>
+    <div>
+      <h1>¡Bienvenido a <strong>Mi librería</strong>!</h1>
+
+      <p>
+        En <strong>Mi librería</strong>!, creemos que la lectura es una
+        experiencia que se enriquece al compartirla. Nuestra plataforma está
+        diseñada para que los amantes de los libros puedan descubrir nuevas
+        obras, intercambiar opiniones y conectar con una comunidad apasionada
+        por la literatura.
+      </p>
+      <p>
+        Nuestro objetivo es crear una comunidad vibrante y acogedora donde cada
+        miembro pueda compartir su amor por la lectura, descubrir nuevos
+        horizontes literarios y conectar con otros lectores que comparten su
+        pasión. Te invitamos a unirte a <strong>Mi librería</strong> y ser parte de
+        esta aventura literaria. ¡Juntos, hagamos de la lectura una experiencia
+        compartida y enriquecedora!
+      </p>
+    </div>
+  </section>
+  <section class="container">
+    <h3>Últimos libros leídos</h3>
+    <div class="row">
+      {{range .libros}}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+        <div class="card h-100 d-flex flex-column">
+          <!-- Contenedor de la imagen -->
+          <div class="image-container flex-grow-1">
+            <img
+              src="{{.Url_imagen}}"
+              class="card-img-top h-100"
+              alt="Portada de {{ .Nombre }}"
+              style="object-fit: cover"
+            />
+          </div>
+
+          <!-- Nombre y autor (debajo de todo) -->
+          <div class="card-body mt-auto">
+            <h5 class="card-title">{{ .Nombre }}</h5>
+            <p class="card-text">Autor: {{ .Autor }}</p>
+            <p>Subido por: {{ .UsuarioNombre }}</p>
+          </div>
+
+          <!-- Lista de detalles (puntaje) -->
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              Puntaje:
+              <p>Puntaje: {{ .Puntaje }}/10</p>
+            </li>
+          </ul>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <p>Fecha: {{ .FechaCreacion | formatDate }}</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      {{end}}
+    </div>
+  </section>
+</main>
+{{template "pie"}}

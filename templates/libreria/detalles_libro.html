@@ -1,0 +1,67 @@
+{{template "header"}} {{if .usuario_id}} {{template "navbarLogin"}} {{else}}
+{{template "navbarNotLogin"}} {{end}}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card bg-dark text-white">
+        <a href="/proximos-libros" class="btn btn-secondary m-3"
+          >Volver a la lista</a
+        >
+        <div class="row g-0">
+          <!-- Cambié no-gutters por g-0 (Bootstrap 5) -->
+          <!-- Imagen del libro -->
+          <div
+            class="col-md-4 d-flex align-items-center justify-content-center p-3"
+          >
+            <img
+              src="{{.Datos.Url_imagen}}"
+              alt="Portada de {{.Datos.Nombre}}"
+              class="img-fluid"
+            />
+          </div>
+
+          <!-- Ficha técnica -->
+          <div class="col-md-8">
+            <div class="card-body d-flex flex-column h-100">
+              <!-- Título del libro -->
+              <h5 class="card-title">{{.Datos.Nombre}}</h5>
+
+              <!-- Información del libro -->
+              <div class="mb-3">
+                <p class="card-text mb-2">
+                  <strong>Autor:</strong> {{.Datos.Autor}}
+                </p>
+                <p class="card-text mb-2">
+                  <strong>Editorial:</strong> {{.Datos.Editorial}}
+                </p>
+                <p class="card-text mb-2">
+                  <strong>Puntaje:</strong>
+
+                  {{if and .Datos.Puntaje.Valid (ne .Datos.Puntaje.Int64 0)}}
+                  {{.Datos.Puntaje.Int64}} {{else}} Sin puntaje {{end}}
+                </p>
+                <p class="card-text mb-2">
+                  <a href="/libro/{{.Datos.Id}}/editar">
+                    Editar características</a>
+                </p>
+                
+              </div>
+
+              <!-- Descripción -->
+              {{if .Datos.Descripcion}}
+              <div class="card-text">
+                <strong>Descripción:</strong>
+                <div class="mt-2" style="max-height: 200px; overflow-y: auto">
+                  <p>{{.Datos.Descripcion}}</p>
+                </div>
+              </div>
+              {{end}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{template "pie"}}

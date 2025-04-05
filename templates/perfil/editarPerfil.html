@@ -1,0 +1,43 @@
+{{ template "header" }} {{ template "navbarLogin" }}
+<section class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h3 class="card-title mb-3">Mi Perfil</h3>
+          {{ if .Datos }} {{range .Datos}}
+          <form action="/perfil-edit-actualizar/{{ .Id }}" method="POST">
+
+          
+          <!-- Imagen de perfil con fallback -->
+          <div class="form-group mb-3 d-flex align-items-center gap-3">
+            <input type="text" id="url_imagen" name="url_imagen" class="form-control" value="{{ if .Imagen_perfil }}{{ .Imagen_perfil }}{{ else }}https://via.placeholder.com/120{{ end }}">
+            <img src="{{ if .Imagen_perfil }}{{ .Imagen_perfil }}{{ else }}https://via.placeholder.com/120{{ end }}" alt="Portada" class="img-fluid rounded-circle shadow mb-3 image-preview" style="max-width: 100px; height: auto;">
+          </div>
+          <div class="form-group mb-3">
+            <input type="text" id="nombre" name="nombre" class="form-control card-subtitle text-muted" value="{{ .Nombre }}" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <input type="text" id="correo" name="correo" class="form-control card-subtitle text-muted" value="{{ .Correo }}" required>
+          </div>
+          <div class="form-group mb-3">
+            <input type="text" id="telefono" name="telefono" class="form-control card-subtitle text-muted" value="{{ .Telefono }}" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a href="/perfil-edit" class="btn btn-secondary">Cancelar</a>
+          </div>
+          </form>
+          {{end}}
+          {{end}}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+<script src="/ruta/a/tu/bootstrap.min.js"></script>
+{{template "pie"}}
